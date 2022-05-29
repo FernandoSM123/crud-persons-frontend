@@ -1,0 +1,184 @@
+<!--Spinner-->
+<ngx-spinner 
+bdColor = "#303030" 
+size = "medium" 
+color = "white" 
+type = "timer" 
+[fullScreen] = "true">
+<p id="spinnerText"> Loading... </p>
+</ngx-spinner>
+
+
+<!--Main App-->
+<div class="mainWrapper">
+
+  <h1>CRUD of users</h1>
+
+  <p class="appDescription">
+    Web application able to store users, to insert a user you need to type his
+    name,last name and age, the application is able to perform the basic operations of a CRUD
+    (create, read, update and delete) .The information of the users is stored in a
+    NoSql database built with MongoDB
+  </p>
+
+  <div class="contentBox">
+
+    <!-- 1) ********** FORM_BOX ********** -->
+    <div class="formBox">
+      <h2>Insert a User</h2>
+      <form [formGroup]="usersForm">
+        <!--Name Input-->
+        <mat-form-field appearance="fill" color="accent" class="inputWrapper">
+          <mat-label>Insert user's name</mat-label>
+          <input matInput placeholder="Name" formControlName="name">
+          <mat-error *ngIf="name?.errors?.required && name?.touched">
+            Name required
+          </mat-error>
+        </mat-form-field><br>
+
+        <!--Lastname Input-->
+        <mat-form-field appearance="fill" color="accent" class="inputWrapper">
+          <mat-label>Insert user's lastname</mat-label>
+          <input matInput placeholder="LastName" formControlName="lastName">
+          <mat-error *ngIf="lastName?.errors?.required && lastName?.touched">
+            Last Name required
+          </mat-error>
+        </mat-form-field><br>
+
+        <!--Age Input-->
+        <mat-form-field appearance="fill" color="accent" class="inputWrapper">
+          <mat-label>Insert user's age</mat-label>
+          <input matInput type="number" placeholder="Age" formControlName="age">
+
+          <!--Edad requerida-->
+          <mat-error *ngIf="age?.errors?.required && age?.touched">
+            Age required
+          </mat-error>
+
+          <!--Edad debe ser mayor a 18-->
+          <mat-error *ngIf="age?.errors?.min">
+            Age must be greater or equal to 18
+          </mat-error>
+
+          <!--Edad debe ser menor a 100-->
+          <mat-error *ngIf="age?.errors?.max">
+            Age must be lower or equal to 100
+          </mat-error>
+
+        </mat-form-field><br>
+        <button *ngIf="!updateState" mat-raised-button color="primary" (click)="insertUser()" [disabled]="usersForm?.invalid">Submit</button>
+
+        <!--Update buttons-->
+        <div id="updateButtonsBox" *ngIf="updateState">
+          <button mat-raised-button color="accent" (click)="updateUserById()">Update</button>
+          <button mat-raised-button color="warn" (click)="disableUpdateState()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 2) ********** TABLE_BOX ********** -->
+    <div class="tableBox">
+      <h2>Users Data</h2>
+
+      <!--Search input-->
+
+      <div class="input-group" id="searchWrapper" *ngIf="!noUsers">
+
+        <select class="form-select bg-secondary text-white" id="mySelect"  (change)="changeSelectedField($event)">
+          <option selected value="all">All</option>
+          <option value="name">Name</option>
+          <option value="lastName">Last Name</option>
+          <option value="age">Age</option>
+        </select>
+
+        <input type="text" class="form-control text-dark" placeholder="Search" #searchInput>
+        <button type="button" class="btn btn-secondary" title="Search" (click)="searchPersonsByField()">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+
+      <table mat-table [dataSource]="dataSource" #myTable *ngIf="!noUsers && !noResult">
+
+
+        <!-- # Column -->
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef> No. </th>
+          <td mat-cell *matCellDef="let i = index;"> {{(i+1)+(currentPage*pageSize)}} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let person"> {{person.name}} </td>
+        </ng-container>
+
+        <!-- LastName Column -->
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef> LastName </th>
+          <td mat-cell *matCellDef="let person"> {{person.lastName}} </td>
+        </ng-container>
+
+        <!-- Age Column -->
+        <ng-container matColumnDef="age">
+          <th mat-header-cell *matHeaderCellDef> Age </th>
+          <td mat-cell *matCellDef="let person"> {{person.age}} </td>
+        </ng-container>
+
+         <!-- Delete Column -->
+         <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef> Delete </th>
+          <td mat-cell *matCellDef="let person"> 
+            <button mat-raised-button color="warn" (click)="deleteUser(person)">Delete</button>
+          </td>
+        </ng-container>
+
+         <!-- Update Column -->
+         <ng-container matColumnDef="update">
+          <th mat-header-cell *matHeaderCellDef> Update </th>
+          <td mat-cell *matCellDef="let person">
+            <button mat-raised-button color="accent" (click)="enableUpdateState(person)">Update</button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="No">
+          <th mat-footer-cell *matHeaderCellDef [attr.rowspan]="2">No</th>
+        </ng-container>
+
+        <ng-container matColumnDef="header-row-second-group">
+          <th mat-header-cell *matHeaderCellDef [attr.colspan]="2"> Second group </th>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableHeaders;"></tr>
+      </table>
+
+       <!--Search returns no values-->
+       <div *ngIf="noResult" id="NoUsers">
+        <h3>No Results</h3>
+      </div>
+
+      <!--Paginator-->
+      <mat-paginator *ngIf="!noUsers && !noResult"
+        #paginator [length]="length" [pageIndex]="currentPage" [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions" showFirstLastButtons aria-label="Select page" color="accent"
+        (page)="pageChanged($event)">
+      </mat-paginator>
+
+      <!--Button to delete al records-->
+      <div *ngIf="!noUsers && !noResult" id="deleteAll">
+        <button mat-raised-button color="primary" (click)="deleteAllUsers()">Delete All</button>
+      </div>
+
+      <!--No users-->
+      <div *ngIf="noUsers" id="NoUsers">
+        <h3>No users registered yet</h3>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3) ********** FOOTER ********** -->
+  <footer>
+    <p>Created by <u>Fernando Sánchez Monge</u></p>
+  </footer>
+</div>

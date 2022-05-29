@@ -1,0 +1,169 @@
+#spinnerText{
+    margin-top: 3rem;
+    color: white;
+    font-size: 25px;
+}
+
+
+.mainWrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    background-color: #303030;
+}
+
+h1,
+h2,
+h3,
+p,
+input {
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.appDescription {
+    padding: 1rem;
+}
+
+.contentBox {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.contentBox div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/*
+********************
+*** 1) FORM_BOX ***
+********************
+*/
+
+.formBox form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #424242;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    border-radius: 1rem;
+    width: min(90%, 450px);
+}
+
+.inputWrapper {
+    margin-bottom: 1rem;
+}
+
+#updateButtonsBox {
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+
+/*
+********************
+*** 2) TABLE_BOX ***
+********************
+*/
+
+
+/*SEARCH INPUT*/
+
+#searchWrapper {
+    display: flex;
+    flex-direction: row;
+    width: min(90%, 500px);
+}
+
+#mySelect {
+    border-color: none;
+}
+
+/*TABLE*/
+
+.tableBox table {
+    width: min(90%, 500px);
+}
+
+.tableBox table th,
+tr {
+    text-align: center;
+}
+
+.tableBox table th {
+    font-weight: bold;
+    color: white;
+}
+
+mat-paginator {
+    width: min(90%, 500px);
+}
+
+#NoUsers {
+    background-color: #424242;
+    border-radius: 1rem;
+    width: min(90%, 500px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+#deleteAll {
+    background-color: #424242;
+    width: min(90%, 500px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+h3 {
+    text-align: center;
+    margin: 0;
+}
+
+/*
+*****************
+*** 3) FOOTER ***
+*****************
+*/
+
+footer {
+    margin-top: auto;
+    text-align: center;
+}
+
+/*
+************************
+*** 4) MEDIA_QUERIES ***
+************************
+*/
+
+@media only screen and (min-width: 1100px) {
+    .contentBox {
+        flex-direction: row;
+    }
+
+    .contentBox div {
+        width: 50%;
+    }
+
+}
